@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>XML Faktúra → HTML Prevodník</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #1a1a2e;
+      color: #e0e0e0;
+      min-height: 100vh;
+    }
+    .app {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    header {
+      text-align: center;
+      padding: 24px 0 20px;
+      border-bottom: 1px solid #333;
+      margin-bottom: 24px;
+    }
+    header h1 {
+      font-size: 24px;
+      font-weight: 600;
+      color: #fff;
+    }
+    header p {
+      font-size: 14px;
+      color: #888;
+      margin-top: 6px;
+    }
+    .controls {
+      display: flex;
+      gap: 16px;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+      padding: 20px;
+      background: #16213e;
+      border-radius: 8px;
+      border: 1px solid #2a2a4a;
+    }
+    .control-group {
+      flex: 1;
+      min-width: 250px;
+    }
+    .control-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #aaa;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .control-group .file-info {
+      font-size: 12px;
+      color: #666;
+      margin-top: 4px;
+    }
+    .control-group .file-info.has-file {
+      color: #4ecca3;
+    }
+    .server-file-select {
+      display: block;
+      width: 100%;
+      margin-bottom: 8px;
+      padding: 10px;
+      background: #0f3460;
+      border: 1px solid #2a2a4a;
+      border-radius: 6px;
+      color: #ccc;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .server-file-select:focus { border-color: #4ecca3; outline: none; }
+    .print-switch {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      padding: 9px 12px;
+      border: 1px solid #2a2a4a;
+      border-radius: 999px;
+      background: #16213e;
+      color: #ccc;
+      font-size: 12px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .print-switch input { position: absolute; opacity: 0; pointer-events: none; }
+    .switch-track { position: relative; width: 34px; height: 20px; border-radius: 20px; background: #667085; transition: .2s ease; }
+    .switch-track::after { content: ''; position: absolute; top: 3px; left: 3px; width: 14px; height: 14px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.25); transition: .2s ease; }
+    .print-switch input:checked + .switch-track { background: #4ecca3; }
+    .print-switch input:checked + .switch-track::after { transform: translateX(14px); }
+    .print-switch.is-disabled { opacity: .45; cursor: not-allowed; }
+    input[type="file"] {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      background: #0f3460;
+      border: 1px solid #2a2a4a;
+      border-radius: 6px;
+      color: #ccc;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    input[type="file"]:hover {
+      border-color: #4ecca3;
+    }
+    .btn-convert {
+      padding: 12px 32px;
+      background: #e94560;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+      white-space: nowrap;
+    }
+    .btn-convert:hover { background: #c73652; }
+    .btn-convert:disabled {
+      background: #555;
+      cursor: not-allowed;
+    }
+    .btn-download {
+      padding: 12px 24px;
+      background: #4ecca3;
+      color: #1a1a2e;
+      border: none;
+      border-radius: 6px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+      white-space: nowrap;
+    }
+    .btn-download:hover { background: #3bb08f; }
+    .btn-download:disabled {
+      background: #555;
+      cursor: not-allowed;
+    }
+    .actions {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+    .status {
+      font-size: 13px;
+      padding: 8px 14px;
+      border-radius: 4px;
+      margin-bottom: 16px;
+    }
+    .status.error {
+      background: #2a1a1a;
+      color: #ff6b6b;
+      border: 1px solid #5a2a2a;
+    }
+    .status.success {
+      background: #1a2a1a;
+      color: #4ecca3;
+      border: 1px solid #2a5a2a;
+    }
+    .preview-container {
+      border: 1px solid #2a2a4a;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #fff;
+      min-height: 400px;
+    }
+    .preview-header {
+      background: #16213e;
+      padding: 10px 16px;
+      font-size: 13px;
+      color: #888;
+      border-bottom: 1px solid #2a2a4a;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .preview-header span { color: #aaa; font-weight: 600; }
+    iframe {
+      width: 100%;
+      height: 80vh;
+      border: none;
+      display: block;
+    }
+    .placeholder {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 400px;
+      color: #555;
+      font-size: 16px;
+    }
+    .view-toggle {
+      display: flex;
+      gap: 0;
+      border-radius: 4px;
+      overflow: hidden;
+      border: 1px solid #2a2a4a;
+    }
+    .view-toggle button {
+      padding: 6px 14px;
+      font-size: 12px;
+      border: none;
+      cursor: pointer;
+      background: #0f3460;
+      color: #888;
+      transition: all 0.2s;
+    }
+    .view-toggle button.active {
+      background: #4ecca3;
+      color: #1a1a2e;
+      font-weight: 600;
+    }
+    #html-source {
+      display: none;
+      width: 100%;
+      height: 80vh;
+      background: #0d1117;
+      color: #c9d1d9;
+      border: none;
+      padding: 16px;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      resize: none;
+      box-sizing: border-box;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <h1>XML Faktúra → HTML Prevodník</h1>
+      <p>Nahrajte XML faktúru a XSLT šablónu pre konverziu na HTML s náhľadom</p>
+    </header>
+
+    <div class="controls">
+      <div class="control-group">
+        <label for="xml-file">📄 XML Faktúra</label>
+        <select class="server-file-select" id="xml-library">
+          <option value="">Vyberte XML zo servera…</option>
+          <option value="/docs/xml/efaktura-refimo-1.xml">efaktura-refimo-1</option>
+          <option value="/docs/xml/efaktura-refimo-2.xml">efaktura-refimo-2</option>
+        </select>
+        <input type="file" id="xml-file" accept=".xml,.UBLInvoice,.txt">
+        <div class="file-info" id="xml-info">Žiadny súbor vybraný</div>
+      </div>
+      <div class="control-group">
+        <label for="xslt-file">🎨 XSLT Šablóna</label>
+        <select class="server-file-select" id="xslt-library">
+          <option value="">Vyberte šablónu zo servera…</option>
+          <option value="/docs/sablony/oberon-klasik.xslt">oberon-klasik</option>
+          <option value="/docs/sablony/oberon-vyhotovena-1.xslt">oberon-vyhotovena-1</option>
+          <option value="/docs/sablony/oberon-modern-1.xslt">oberon-modern-1</option>
+        </select>
+        <input type="file" id="xslt-file" accept=".xslt,.xsl,.xml">
+        <div class="file-info" id="xslt-info">Žiadny súbor vybraný</div>
+      </div>
+      <button class="btn-convert" id="convert-btn" disabled>Pretvoriť</button>
+    </div>
+
+    <div id="status"></div>
+
+    <div class="actions">
+      <label class="print-switch is-disabled" id="print-mode-control" title="Zobrazí faktúru v rozmeroch A4 na výšku">
+        <input type="checkbox" id="print-mode-toggle" aria-label="Režim tlače na A4" disabled>
+        <span class="switch-track"></span>
+        <span>Režim tlače A4</span>
+      </label>
+      <button class="btn-download" id="download-xml-btn" disabled>⬇ Stiahnuť XML</button>
+      <button class="btn-download" id="download-xslt-btn" disabled>⬇ Stiahnuť XSLT</button>
+      <button class="btn-download" id="download-btn" disabled>⬇ Stiahnuť HTML</button>
+      <div class="view-toggle">
+        <button id="view-preview" class="active">Náhľad</button>
+        <button id="view-source">Zdrojový kód</button>
+      </div>
+    </div>
+
+    <div class="preview-container">
+      <div class="preview-header">
+        <span>Výstup</span>
+        <span id="output-info"></span>
+      </div>
+      <div class="placeholder" id="placeholder">
+        Nahrajte XML faktúru a XSLT šablónu a kliknite na "Pretvoriť"
+      </div>
+      <iframe id="preview-frame" style="display:none;"></iframe>
+      <textarea id="html-source" readonly></textarea>
+    </div>
+  </div>
+
+  <script>
+    const xmlInput = document.getElementById('xml-file');
+    const xsltInput = document.getElementById('xslt-file');
+    const xmlLibrary = document.getElementById('xml-library');
+    const xsltLibrary = document.getElementById('xslt-library');
+    const convertBtn = document.getElementById('convert-btn');
+    const downloadBtn = document.getElementById('download-btn');
+    const statusDiv = document.getElementById('status');
+    const previewFrame = document.getElementById('preview-frame');
+    const htmlSource = document.getElementById('html-source');
+    const placeholder = document.getElementById('placeholder');
+    const xmlInfo = document.getElementById('xml-info');
+    const xsltInfo = document.getElementById('xslt-info');
+    const outputInfo = document.getElementById('output-info');
+    const viewPreviewBtn = document.getElementById('view-preview');
+    const viewSourceBtn = document.getElementById('view-source');
+    const printModeToggle = document.getElementById('print-mode-toggle');
+    const printModeControl = document.getElementById('print-mode-control');
+
+    let xmlContent = '';
+    let xsltContent = '';
+    let resultHTML = '';
+    let xmlFileName = 'efaktura.xml';
+    let xsltFileName = 'sablona.xslt';
+
+    // Auto-select XSLT template from project directory
+    (function autoSelectXslt() {
+      // Try to find template_qr.xslt in the same directory
+      // Since we can't read filesystem directly, we'll set a default filename hint
+      xsltInfo.textContent = 'Tip: Použite template_qr.xslt z tohto adresára';
+      xsltInfo.classList.add('has-file');
+    })();
+
+    xmlInput.addEventListener('change', function() {
+      const file = this.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          xmlContent = e.target.result;
+          xmlFileName = file.name;
+          xmlInfo.textContent = file.name + ' (' + formatBytes(file.size) + ')';
+          xmlInfo.classList.add('has-file');
+          updateConvertButton();
+        };
+        reader.readAsText(file);
+      } else {
+        xmlContent = '';
+        xmlInfo.textContent = 'Žiadny súbor vybraný';
+        xmlInfo.classList.remove('has-file');
+        updateConvertButton();
+      }
+    });
+
+    xsltInput.addEventListener('change', function() {
+      const file = this.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          xsltContent = e.target.result;
+          xsltFileName = file.name;
+          xsltInfo.textContent = file.name + ' (' + formatBytes(file.size) + ')';
+          xsltInfo.classList.add('has-file');
+          updateConvertButton();
+        };
+        reader.readAsText(file);
+      } else {
+        xsltContent = '';
+        xsltInfo.textContent = 'Tip: Použite template_qr.xslt z tohto adresára';
+        xsltInfo.classList.remove('has-file');
+        updateConvertButton();
+      }
+    });
+
+    function formatBytes(bytes) {
+      if (bytes < 1024) return bytes + ' B';
+      if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+      return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+    }
+
+    function updateConvertButton() {
+      convertBtn.disabled = !(xmlContent && xsltContent);
+      document.getElementById('download-xml-btn').disabled = !xmlContent;
+      document.getElementById('download-xslt-btn').disabled = !xsltContent;
+    }
+
+    async function loadServerFile(select, kind) {
+      const url = select.value;
+      if (!url) return;
+
+      try {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error('HTTP ' + response.status);
+        const content = await response.text();
+        const fileName = decodeURIComponent(url.split('/').pop());
+
+        if (kind === 'xml') {
+          xmlContent = content;
+          xmlFileName = fileName;
+          xmlInfo.textContent = fileName + ' (server)';
+          xmlInfo.classList.add('has-file');
+        } else {
+          xsltContent = content;
+          xsltFileName = fileName;
+          xsltInfo.textContent = fileName + ' (server)';
+          xsltInfo.classList.add('has-file');
+        }
+        updateConvertButton();
+        showStatus('Súbor bol načítaný zo servera.', 'success');
+      } catch (err) {
+        showStatus('Súbor sa nepodarilo načítať: ' + err.message, 'error');
+        select.value = '';
+      }
+    }
+
+    xmlLibrary.addEventListener('change', function() {
+      loadServerFile(this, 'xml');
+    });
+
+    xsltLibrary.addEventListener('change', function() {
+      loadServerFile(this, 'xslt');
+    });
+
+    function downloadTextFile(content, fileName, mimeType) {
+      if (!content) return;
+      const blob = new Blob([content], { type: mimeType });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    document.getElementById('download-xml-btn').addEventListener('click', function() {
+      downloadTextFile(xmlContent, xmlFileName, 'application/xml;charset=utf-8');
+    });
+
+    document.getElementById('download-xslt-btn').addEventListener('click', function() {
+      downloadTextFile(xsltContent, xsltFileName, 'application/xml;charset=utf-8');
+    });
+
+    function showStatus(message, type) {
+      statusDiv.innerHTML = '<div class="status ' + type + '">' + message + '</div>';
+    }
+
+    convertBtn.addEventListener('click', function() {
+      if (!xmlContent || !xsltContent) {
+        showStatus('Prosím, nahrajte XML faktúru aj XSLT šablónu.', 'error');
+        return;
+      }
+
+      try {
+        // Parse XML
+        const xmlParser = new DOMParser();
+        const xmlDoc = xmlParser.parseFromString(xmlContent, 'application/xml');
+
+        // Check for parse errors
+        const parseError = xmlDoc.getElementsByTagName('parsererror');
+        if (parseError.length > 0) {
+          throw new Error('Chyba parsovania XML: ' + parseError[0].textContent.substring(0, 200));
+        }
+
+        // Parse XSLT
+        const xsltParser = new DOMParser();
+        const xsltDoc = xsltParser.parseFromString(xsltContent, 'application/xml');
+
+        // Check for parse errors
+        const xsltError = xsltDoc.getElementsByTagName('parsererror');
+        if (xsltError.length > 0) {
+          throw new Error('Chyba parsovania XSLT: ' + xsltError[0].textContent.substring(0, 200));
+        }
+
+        // Transform
+        const xsltProcessor = new XSLTProcessor();
+        xsltProcessor.importStylesheet(xsltDoc);
+
+        const resultDocument = xsltProcessor.transformToDocument(xmlDoc);
+        const serializer = new XMLSerializer();
+        resultHTML = serializer.serializeToString(resultDocument);
+
+        // Display result
+        displayResult();
+        downloadBtn.disabled = false;
+        showStatus('Konverzia bola úspešne dokončená.', 'success');
+
+      } catch (err) {
+        showStatus('Chyba pri konverzii: ' + err.message, 'error');
+        console.error(err);
+      }
+    });
+
+    function displayResult() {
+      placeholder.style.display = 'none';
+
+      // Set iframe src with data URI
+      const blob = new Blob([resultHTML], { type: 'text/html' });
+      const url = URL.createObjectURL(blob);
+      previewFrame.src = url;
+      previewFrame.style.display = 'block';
+      previewFrame.onload = function() {
+        applyPrintMode();
+      };
+
+      // Set source view
+      htmlSource.value = resultHTML;
+
+      // Update output info
+      outputInfo.textContent = resultHTML.length.toLocaleString() + ' znakov';
+      printModeToggle.disabled = false;
+      printModeControl.classList.remove('is-disabled');
+    }
+
+    function applyPrintMode() {
+      const previewDocument = previewFrame.contentDocument;
+      if (previewDocument && previewDocument.body) {
+        previewDocument.body.classList.toggle('print-mode', printModeToggle.checked);
+      }
+    }
+
+    printModeToggle.addEventListener('change', applyPrintMode);
+
+    downloadBtn.addEventListener('click', function() {
+      if (!resultHTML) return;
+
+      // Extract invoice number from XML for filename
+      const xmlParser = new DOMParser();
+      const xmlDoc = xmlParser.parseFromString(xmlContent, 'application/xml');
+      const invoiceId = xmlDoc.getElementsByTagName('cbc:ID')[0]?.textContent
+        || xmlDoc.getElementsByTagName('ID').item(0)?.textContent
+        || 'faktura';
+
+      const blob = new Blob([resultHTML], { type: 'text/html;charset=utf-8' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = invoiceId + '.html';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(a.href);
+    });
+
+    viewPreviewBtn.addEventListener('click', function() {
+      previewFrame.style.display = 'block';
+      htmlSource.style.display = 'none';
+      viewPreviewBtn.classList.add('active');
+      viewSourceBtn.classList.remove('active');
+    });
+
+    viewSourceBtn.addEventListener('click', function() {
+      previewFrame.style.display = 'none';
+      htmlSource.style.display = 'block';
+      viewSourceBtn.classList.add('active');
+      viewPreviewBtn.classList.remove('active');
+    });
+  </script>
+</body>
+</html>

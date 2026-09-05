@@ -1,0 +1,1338 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
+                xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2" 
+                xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2" 
+                xmlns:cn="urn:oasis:names:specification:ubl:schema:xsd:CreditNote-2" 
+                xmlns:in="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2" 
+                xmlns:u="utils" 
+                version="1.0" 
+                exclude-result-prefixes="cac cbc u cn in">
+	<xsl:output method="html" version="1.0" encoding="UTF-8" indent="no"/>
+	<xsl:param name="stylesheet_url" select="'NONE'"/>
+	
+	<xsl:template name="doc-head">
+		<meta charset="utf-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+		<xsl:choose>
+			<xsl:when test="$stylesheet_url = 'NONE'">
+				<style>
+:root {
+  --primary: #2563eb;
+  --text: #1f2937;
+  --muted: #6b7280;
+  --bg: #f3f4f6;
+  --card: #ffffff;
+  --border: #e5e7eb;
+  --success: #10b981;
+  --danger: #ef4444;
+}
+* { box-sizing: border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--text);
+  background: var(--bg);
+  margin: 0;
+  padding: 20px;
+}
+#document {
+  max-width: 900px;
+  margin: 0 auto;
+  background: var(--card);
+  border-radius: 12px;
+  box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+  padding: 40px;
+}
+h1 {
+  font-size: 2.25rem;
+  font-weight: 800;
+  color: var(--primary);
+  margin: 0 0 0.5rem 0;
+  letter-spacing: -0.025em;
+}
+h1 small {
+  font-size: 1rem;
+  color: var(--muted);
+  font-weight: 500;
+  display: block;
+  margin-top: 0.25rem;
+}
+h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text);
+  border-bottom: 2px solid var(--border);
+  padding-bottom: 0.5rem;
+  margin: 2rem 0 1rem 0;
+}
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 -12px;
+}
+.row > * {
+  padding: 0 12px;
+  width: 100%;
+}
+@media (min-width: 768px) {
+  .col-sm-2 { width: 16.666%; }
+  .col-sm-3 { width: 25%; }
+  .col-sm-4 { width: 33.333%; }
+  .col-sm-5 { width: 41.666%; }
+  .col-sm-6 { width: 50%; }
+  .col-sm-7 { width: 58.333%; }
+  .col-sm-8 { width: 66.666%; }
+  .col-sm-9 { width: 75%; }
+  .col-sm-10 { width: 83.333%; }
+  .col-sm-11 { width: 91.666%; }
+  .col-sm-offset-1 { margin-left: 8.333%; }
+  .col-md-5 { width: 41.666%; }
+  .col-md-7 { width: 58.333%; }
+  .col-xs-6 { width: 50%; }
+}
+dl {
+  margin: 0;
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 8px 16px;
+}
+@media (max-width: 767px) {
+  dl { grid-template-columns: 1fr; gap: 4px 0; }
+  dt { margin-top: 8px; }
+}
+dt {
+  font-weight: 600;
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+dd {
+  margin: 0;
+  font-size: 0.95rem;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1.5rem;
+}
+th, td {
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+th {
+  font-weight: 600;
+  color: var(--muted);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: #f9fafb;
+}
+.text-right { text-align: right; }
+.text-center { text-align: center; }
+.mtr {
+  color: var(--danger);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.75rem;
+  background: #fef2f2;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+.line {
+  background: #f9fafb;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+.line .number {
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 8px;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+}
+.linetotal {
+  padding: 12px 16px;
+  border-radius: 6px;
+  margin-top: 12px;
+  background: #f3f4f6;
+  border-top: 1px solid var(--border);
+}
+.total {
+  padding: 16px;
+  border-radius: 8px;
+  margin-top: 16px;
+  background: var(--primary);
+  color: white;
+  font-weight: 600;
+}
+.total dt, .total dd { color: white; }
+.linesupport {
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px 12px;
+  margin: 8px 0;
+  font-size: 0.875rem;
+}
+#footer {
+  margin-top: 48px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 0.875rem;
+  text-align: center;
+  line-height: 1.8;
+}
+#logo {
+  max-width: 180px;
+  max-height: 80px;
+  float: right;
+  margin-bottom: 20px;
+  object-fit: contain;
+}
+.note {
+  font-style: italic;
+  color: var(--muted);
+  background: #f8fafc;
+  padding: 12px 16px;
+  border-left: 4px solid var(--primary);
+  border-radius: 0 6px 6px 0;
+  margin: 16px 0;
+}
+a { color: var(--primary); text-decoration: none; }
+a:hover { text-decoration: underline; }
+@media print {
+  body { background: white; padding: 0; }
+  #document { box-shadow: none; padding: 0; max-width: 100%; border-radius: 0; }
+  .line { break-inside: avoid; border: 1px solid #ddd; }
+  h1 { color: #000; }
+  .total { background: #eee; color: #000; border: 1px solid #ccc; }
+  .total dt, .total dd { color: #000; }
+  a { text-decoration: none; color: #000; }
+}
+				</style>
+			</xsl:when>
+			<xsl:otherwise>
+				<link rel="stylesheet" href="{$stylesheet_url}"/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+
+	<xsl:template name="doc-footer">
+		<div id="footer">
+			<div>Document: <xsl:value-of select="namespace-uri()"/>::<xsl:value-of select="local-name()"/></div>
+			<div>Customization: <xsl:value-of select="cbc:CustomizationID"/></div>
+			<div>Profile: <xsl:value-of select="cbc:ProfileID"/></div>
+		</div>
+	</xsl:template>
+
+	<xsl:template name="replace-newlines">
+		<xsl:param name="text"/>
+		<xsl:choose>
+			<xsl:when test="contains($text, '&#10;')">
+				<xsl:value-of select="normalize-space(substring-before($text, '&#10;'))"/>
+				<br/>
+				<xsl:call-template name="replace-newlines">
+					<xsl:with-param name="text" select="substring-after($text, '&#10;')"/>
+				</xsl:call-template>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="normalize-space($text)"/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+
+	<xsl:template name="codelist">
+		<xsl:param name="codelist"/>
+		<xsl:param name="code"/>
+		<xsl:variable name="lang" select="$language"/>
+		<xsl:variable name="result" select="$codelists/cl[@id=$codelist]/c[@id=$code]/t[@id=$lang]/text()"/>
+		<xsl:choose>
+			<xsl:when test="$result">
+				<xsl:value-of select="$result"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<span class="mtr">[code:<xsl:value-of select="$codelist"/>:<xsl:value-of select="$code"/>]</span>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+
+	<xsl:template name="label">
+		<xsl:param name="part"/>
+		<xsl:param name="value"/>
+		<xsl:variable name="lang" select="$language"/>
+		<xsl:variable name="result" select="$labels/g[@id=$part]/f[@id=$value]/t[@id=$lang]/text()"/>
+		<xsl:choose>
+			<xsl:when test="$result">
+				<xsl:value-of select="$result"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<span class="mtr">[label:<xsl:value-of select="$part"/>.<xsl:value-of select="$value"/>]</span>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+
+	<xsl:template match="cn:CreditNote[starts-with(normalize-space(cbc:CustomizationID/text()), 'urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0')]" mode="document" priority="1000">
+		<html lang="{$language}">
+			<head>
+				<xsl:call-template name="doc-head"/>
+				<title>
+					<xsl:call-template name="label">
+						<xsl:with-param name="part" select="'document'"/>
+						<xsl:with-param name="value" select="local-name()"/>
+					</xsl:call-template>
+				</title>
+			</head>
+			<body>
+				<div id="document">
+					<h1>
+						<xsl:call-template name="label">
+							<xsl:with-param name="part" select="'document'"/>
+							<xsl:with-param name="value" select="local-name()"/>
+						</xsl:call-template>
+						<small>
+							<xsl:call-template name="codelist">
+								<xsl:with-param name="codelist" select="'uncl1001-cn'"/>
+								<xsl:with-param name="code" select="cbc:CreditNoteTypeCode/text()"/>
+							</xsl:call-template>
+						</small>
+					</h1>
+					<div class="row">
+						<div id="parties" class="col-sm-6 col-md-7">
+							<h3>
+								<xsl:call-template name="label">
+									<xsl:with-param name="part" select="'party'"/>
+									<xsl:with-param name="value" select="'Supplier'"/>
+								</xsl:call-template>
+							</h3>
+							<xsl:apply-templates select="cac:AccountingSupplierParty/cac:Party" mode="party-with-contact"/>
+							<h3>
+								<xsl:call-template name="label">
+									<xsl:with-param name="part" select="'party'"/>
+									<xsl:with-param name="value" select="'Customer'"/>
+								</xsl:call-template>
+							</h3>
+							<xsl:apply-templates select="cac:AccountingCustomerParty/cac:Party" mode="party-with-contact"/>
+						</div>
+						<div id="metadata" class="col-sm-6 col-md-5">
+							<xsl:call-template name="metadata"/>
+							<xsl:apply-templates select="cbc:Note" mode="common"/>
+						</div>
+					</div>
+					<div class="row">
+						<div id="totals" class="col-sm-4">
+							<xsl:apply-templates select="cac:LegalMonetaryTotal" mode="total"/>
+						</div>
+						<div id="delivery" class="col-sm-4">
+							<xsl:call-template name="delivery-block"/>
+						</div>
+						<div id="attachments" class="col-sm-4">
+							<xsl:call-template name="attachments-block"/>
+						</div>
+					</div>
+					<div class="row">
+						<div id="tax" class="col-sm-6">
+							<h3>
+								<xsl:call-template name="label">
+									<xsl:with-param name="part" select="'tax'"/>
+									<xsl:with-param name="value" select="'Tax'"/>
+								</xsl:call-template>
+							</h3>
+							<xsl:apply-templates select="cac:TaxTotal[cac:TaxSubtotal]" mode="tax"/>
+							<xsl:apply-templates select="cac:TaxRepresentativeParty" mode="party"/>
+						</div>
+						<div id="payment" class="col-sm-6">
+							<h3>
+								<xsl:call-template name="label">
+									<xsl:with-param name="part" select="'payment'"/>
+									<xsl:with-param name="value" select="'Payment'"/>
+								</xsl:call-template>
+							</h3>
+							<xsl:apply-templates select="cac:PaymentMeans" mode="payment"/>
+							<xsl:apply-templates select="cac:PayeeParty" mode="party"/>
+							<xsl:apply-templates select="cac:PaymentTerms" mode="payment"/>
+						</div>
+					</div>
+					<hr/>
+					<div id="details">
+						<h3>Details</h3>
+						<xsl:apply-templates select="cac:AllowanceCharge[cbc:ChargeIndicator='true']" mode="line"/>
+						<xsl:apply-templates select="cac:LegalMonetaryTotal/cbc:ChargeTotalAmount" mode="line"/>
+						<xsl:apply-templates select="cac:AllowanceCharge[cbc:ChargeIndicator='false']" mode="line"/>
+						<xsl:apply-templates select="cac:LegalMonetaryTotal/cbc:AllowanceTotalAmount" mode="line"/>
+						<xsl:apply-templates select="cac:CreditNoteLine" mode="line"/>
+						<xsl:apply-templates select="cac:LegalMonetaryTotal/cbc:LineExtensionAmount" mode="line"/>
+					</div>
+					<xsl:call-template name="doc-footer"/>
+				</div>
+			</body>
+		</html>
+	</xsl:template>
+
+	<xsl:template match="in:Invoice[starts-with(normalize-space(cbc:CustomizationID/text()), 'urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0')]" mode="document" priority="1000">
+		<html lang="{$language}">
+			<head>
+				<xsl:call-template name="doc-head"/>
+				<title>
+					<xsl:call-template name="label">
+						<xsl:with-param name="part" select="'document'"/>
+						<xsl:with-param name="value" select="local-name()"/>
+					</xsl:call-template>
+				</title>
+			</head>
+			<body>
+				<div id="document">
+					<h1>
+						<xsl:call-template name="label">
+							<xsl:with-param name="part" select="'document'"/>
+							<xsl:with-param name="value" select="local-name()"/>
+						</xsl:call-template>
+						<small>
+							<xsl:call-template name="codelist">
+								<xsl:with-param name="codelist" select="'uncl1001invoice'"/>
+								<xsl:with-param name="code" select="cbc:InvoiceTypeCode/text()"/>
+							</xsl:call-template>
+						</small>
+					</h1>
+					<div class="row">
+						<div id="parties" class="col-sm-6 col-md-7">
+							<h3>
+								<xsl:call-template name="label">
+									<xsl:with-param name="part" select="'party'"/>
+									<xsl:with-param name="value" select="'Supplier'"/>
+								</xsl:call-template>
+							</h3>
+							<xsl:apply-templates select="cac:AccountingSupplierParty/cac:Party" mode="party-with-contact"/>
+							<h3>
+								<xsl:call-template name="label">
+									<xsl:with-param name="part" select="'party'"/>
+									<xsl:with-param name="value" select="'Customer'"/>
+								</xsl:call-template>
+							</h3>
+							<xsl:apply-templates select="cac:AccountingCustomerParty/cac:Party" mode="party-with-contact"/>
+						</div>
+						<div id="metadata" class="col-sm-6 col-md-5">
+							<xsl:call-template name="metadata"/>
+							<xsl:apply-templates select="cbc:Note" mode="common"/>
+						</div>
+					</div>
+					<div class="row">
+						<div id="totals" class="col-sm-4">
+							<xsl:apply-templates select="cac:LegalMonetaryTotal" mode="total"/>
+						</div>
+						<div id="delivery" class="col-sm-4">
+							<xsl:call-template name="delivery-block"/>
+						</div>
+						<div id="attachments" class="col-sm-4">
+							<xsl:call-template name="attachments-block"/>
+						</div>
+					</div>
+					<div class="row">
+						<div id="tax" class="col-sm-6">
+							<h3>
+								<xsl:call-template name="label">
+									<xsl:with-param name="part" select="'tax'"/>
+									<xsl:with-param name="value" select="'Tax'"/>
+								</xsl:call-template>
+							</h3>
+							<xsl:apply-templates select="cac:TaxTotal[cac:TaxSubtotal]" mode="tax"/>
+							<xsl:apply-templates select="cac:TaxRepresentativeParty" mode="party"/>
+						</div>
+						<div id="payment" class="col-sm-6">
+							<h3>
+								<xsl:call-template name="label">
+									<xsl:with-param name="part" select="'payment'"/>
+									<xsl:with-param name="value" select="'Payment'"/>
+								</xsl:call-template>
+							</h3>
+							<xsl:apply-templates select="cac:PaymentMeans" mode="payment"/>
+							<xsl:apply-templates select="cac:PayeeParty" mode="party"/>
+							<xsl:apply-templates select="cac:PaymentTerms" mode="payment"/>
+						</div>
+					</div>
+					<hr/>
+					<div id="details">
+						<h3>Details</h3>
+						<xsl:apply-templates select="cac:AllowanceCharge[cbc:ChargeIndicator='true']" mode="line"/>
+						<xsl:apply-templates select="cac:LegalMonetaryTotal/cbc:ChargeTotalAmount" mode="line"/>
+						<xsl:apply-templates select="cac:AllowanceCharge[cbc:ChargeIndicator='false']" mode="line"/>
+						<xsl:apply-templates select="cac:LegalMonetaryTotal/cbc:AllowanceTotalAmount" mode="line"/>
+						<xsl:apply-templates select="cac:InvoiceLine" mode="line"/>
+						<xsl:apply-templates select="cac:LegalMonetaryTotal/cbc:LineExtensionAmount" mode="line"/>
+					</div>
+					<xsl:call-template name="doc-footer"/>
+				</div>
+			</body>
+		</html>
+	</xsl:template>
+
+	<xsl:variable name="codelists">
+		<cl id="iso3166">
+			<c id="SK"><t id="en">Slovakia</t><t id="no">Slovakia</t></c>
+			<c id="CZ"><t id="en">Czechia</t><t id="no">Tsjekkia</t></c>
+		</cl>
+		<cl id="uncl1001invoice">
+			<c id="380"><t id="en">Commercial invoice</t><t id="no">Kommersiell faktura</t></c>
+		</cl>
+		<cl id="uncl1001-cn">
+			<c id="381"><t id="en">Credit note</t><t id="no">Kreditnota</t></c>
+		</cl>
+	</xsl:variable>
+
+	<xsl:variable name="labels">
+		<g id="document">
+			<f id="CreditNote"><t id="en">Credit Note</t><t id="no">Kreditnota</t></f>
+			<f id="Invoice"><t id="en">Invoice</t><t id="no">Faktura</t></f>
+		</g>
+		<g id="party">
+			<f id="Supplier"><t id="en">Supplier</t><t id="no">Leverandør</t></f>
+			<f id="Customer"><t id="en">Customer</t><t id="no">Kunde</t></f>
+			<f id="PartyIdentification"><t id="en">Party Identification</t><t id="no">Aktøridentifikator</t></f>
+			<f id="PartyTaxScheme"><t id="en">Tax Identification</t><t id="no">MVA-identifikator</t></f>
+			<f id="BankingReference"><t id="en">Banking Reference</t><t id="no">Bankidentifikator</t></f>
+			<f id="EndpointID"><t id="en">Technical Address</t><t id="no">Teknisk adresse</t></f>
+		</g>
+		<g id="metadata">
+			<f id="Metadata"><t id="en">Metadata</t><t id="no">Metadata</t></f>
+			<f id="ID"><t id="en">Identifier</t><t id="no">Identifikator</t></f>
+			<f id="IssueDate"><t id="en">Issue Date</t><t id="no">Utstedt</t></f>
+			<f id="DueDate"><t id="en">Due Date</t><t id="no">Betalingsfrist</t></f>
+			<f id="TaxPointDate"><t id="en">Tax Date</t><t id="no">MVA-dato</t></f>
+			<f id="DocumentCurrencyCode"><t id="en">Currency</t><t id="no">Valuta</t></f>
+			<f id="TaxCurrencyCode"><t id="en">Tax Currency</t><t id="no">MVA-valuta</t></f>
+			<f id="BuyerReference"><t id="en">Buyer Reference</t><t id="no">Kjøpers referanse</t></f>
+			<f id="AccountingCost"><t id="en">Accounting Cost</t><t id="no">Kontering</t></f>
+			<f id="OrderReference"><t id="en">Order Reference</t><t id="no">Ordrenummer</t></f>
+			<f id="ContractDocumentReference"><t id="en">Contract Reference</t><t id="no">Kontraktsnummer</t></f>
+			<f id="DespatchDocumentReference"><t id="en">Despatch Reference</t><t id="no">Pakkseddel</t></f>
+			<f id="ReceiptDocumentReference"><t id="en">Receipt Reference</t><t id="no">Kvitteringsreferanse</t></f>
+			<f id="OriginatorDocumentReference"><t id="en">Originator Reference</t><t id="no">Kildeidentifikator</t></f>
+			<f id="InvoiceDocumentReference"><t id="en">Preceding Invoice Reference</t><t id="no">Fakturareferanse</t></f>
+			<f id="InvoicePeriod"><t id="en">Invoice Period</t><t id="no">Fakturaperiode</t></f>
+			<f id="ProjectReference"><t id="en">Project Reference</t><t id="no">Prosjektreferanse</t></f>
+			<f id="ObjectIdentifier"><t id="en">Call for Tender/Lot</t><t id="no">Objektidentifikator</t></f>
+		</g>
+		<g id="delivery">
+			<f id="Delivery"><t id="en">Delivery</t><t id="no">Leveringssted</t></f>
+			<f id="DeliveryDate"><t id="en">Date</t><t id="no">Dato</t></f>
+			<f id="DeliveryID"><t id="en">Location</t><t id="no">Identifikator</t></f>
+			<f id="Address"><t id="en">Address</t><t id="no">Adresse</t></f>
+		</g>
+		<g id="attachments">
+			<f id="Attachments"><t id="en">Attachments</t><t id="no">Vedlegg</t></f>
+			<f id="Download"><t id="en">Download</t><t id="no">Last ned</t></f>
+			<f id="Embedded"><t id="en">Embedded</t><t id="no">Innebygd</t></f>
+		</g>
+		<g id="tax">
+			<f id="Tax"><t id="en">Tax</t><t id="no">Merverdiavgift</t></f>
+			<f id="Category"><t id="en">Category</t><t id="no">Kategori</t></f>
+			<f id="TaxableAmount"><t id="en">Taxable</t><t id="no">Grunnlag</t></f>
+			<f id="TaxAmount"><t id="en">Tax</t><t id="no">MVA</t></f>
+			<f id="Total"><t id="en">Total</t><t id="no">Total</t></f>
+		</g>
+		<g id="payment">
+			<f id="Payment"><t id="en">Payment</t><t id="no">Betaling</t></f>
+		</g>
+		<g id="total">
+			<f id="Totals"><t id="en">Totals</t><t id="no">Totaler</t></f>
+			<f id="TaxExclusiveAmount"><t id="en">Tax Exclusive</t><t id="no">Før MVA</t></f>
+			<f id="TaxInclusiveAmount"><t id="en">Tax Inclusive</t><t id="no">Etter MVA</t></f>
+			<f id="PrepaidAmount"><t id="en">Prepaid</t><t id="no">Forhåndsbetalt</t></f>
+			<f id="PayableRoundingAmount"><t id="en">Rounding Amount</t><t id="no">Avrunding</t></f>
+			<f id="PayableAmount"><t id="en">Payable</t><t id="no">Celková suma</t></f>
+		</g>
+		<g id="item">
+			<f id="Name"><t id="en">Name</t><t id="no">Názov</t></f>
+			<f id="Description"><t id="en">Description</t><t id="no">Popis</t></f>
+			<f id="BuyersItemIdentification"><t id="en">Buyers Item Identification</t><t id="no">Kúpujúceho identifikácia</t></f>
+			<f id="SellersItemIdentification"><t id="en">Sellers Item Identification</t><t id="no">Predávajúceho identifikácia</t></f>
+			<f id="StandardItemIdentification"><t id="en">Standard Item Identification</t><t id="no">Štandardná identifikácia</t></f>
+			<f id="CommodityClassification"><t id="en">Commodity Classification</t><t id="no">Klasifikácia</t></f>
+			<f id="OriginCountry"><t id="en">Origin Country</t><t id="no">Krajina pôvodu</t></f>
+		</g>
+		<g id="line">
+			<f id="Allowance"><t id="en">Allowance</t><t id="no">Rabatt</t></f>
+			<f id="Charge"><t id="en">Charge</t><t id="no">Gebyr</t></f>
+			<f id="AllowanceIncluded"><t id="en">Included allowance</t><t id="no">Zahrnutá zľava</t></f>
+			<f id="ChargeIncluded"><t id="en">Included charge</t><t id="no">Zahrnutý poplatok</t></f>
+			<f id="LineExtensionAmount"><t id="en">Line Total</t><t id="no">Celkom za riadok</t></f>
+			<f id="ChargeTotalAmount"><t id="en">Charge Total</t><t id="no">Celkové poplatky</t></f>
+			<f id="AllowanceTotalAmount"><t id="en">Allowance Total</t><t id="no">Celkové zľavy</t></f>
+			<f id="OrderLineReference"><t id="en">Order Line</t><t id="no">Objednávka</t></f>
+			<f id="InvoicePeriod"><t id="en">Invoice Period</t><t id="no">Obdobie</t></f>
+			<f id="DocumentReference"><t id="en">Document Reference</t><t id="no">Referencia dokumentu</t></f>
+		</g>
+	</xsl:variable>
+
+	<xsl:param name="language" select="'en'"/>
+	<xsl:param name="download_attachment" select="'false'"/>
+	<xsl:param name="mode" select="'document'"/>
+
+	<xsl:template match="/">
+		<xsl:choose>
+			<xsl:when test="$mode = 'document'">
+				<xsl:apply-templates select="*" mode="document"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<html lang="{$language}">
+					<head><xsl:call-template name="doc-head"/><title>Unknown mode</title></head>
+					<body><div id="document"><h1>Unknown mode</h1><p>Use mode <code>document</code>.</p></div></body>
+				</html>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+
+	<xsl:template name="attachments-block">
+		<h3>
+			<xsl:call-template name="label">
+				<xsl:with-param name="part" select="'attachments'"/>
+				<xsl:with-param name="value" select="'Attachments'"/>
+			</xsl:call-template>
+		</h3>
+		<xsl:choose>
+			<xsl:when test="cac:AdditionalDocumentReference[cac:Attachment]">
+				<ul style="padding-left: 20px; margin: 0;">
+					<xsl:apply-templates select="cac:AdditionalDocumentReference[cac:Attachment]" mode="attachment"/>
+				</ul>
+			</xsl:when>
+			<xsl:otherwise>
+				<em>No attachments provided.</em>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+
+	<xsl:template match="cac:AdditionalDocumentReference[cac:Attachment]" mode="attachment">
+		<li style="margin-bottom: 8px;">
+			<xsl:value-of select="cbc:ID"/>
+			<xsl:if test="cbc:DocumentDescription">
+				<br/><small><xsl:value-of select="cbc:DocumentDescription"/></small>
+			</xsl:if>
+			<br/>
+			<xsl:apply-templates select="cac:Attachment/*" mode="attachment"/>
+		</li>
+	</xsl:template>
+
+	<xsl:template match="cac:ExternalReference" mode="attachment">
+		<small><a href="{cbc:URI}"><xsl:value-of select="cbc:URI"/></a></small>
+	</xsl:template>
+
+	<xsl:template match="cbc:EmbeddedDocumentBinaryObject" mode="attachment">
+		<xsl:choose>
+			<xsl:when test="$download_attachment = 'true'">
+				<small>
+					<a href="data:{@mimeCode};base64,{translate(text(), ' &#9;&#10;&#13;', '')}" download="{@filename}">
+						<xsl:call-template name="label">
+							<xsl:with-param name="part" select="'attachments'"/>
+							<xsl:with-param name="value" select="'Download'"/>
+						</xsl:call-template> <xsl:value-of select="@filename"/>
+					</a> (<xsl:value-of select="@mimeCode"/>)
+				</small>
+			</xsl:when>
+			<xsl:otherwise>
+				<small>
+					<xsl:call-template name="label">
+						<xsl:with-param name="part" select="'attachments'"/>
+						<xsl:with-param name="value" select="'Embedded'"/>
+					</xsl:call-template>: <xsl:value-of select="@filename"/> (<xsl:value-of select="@mimeCode"/>)
+				</small>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+
+	<xsl:template match="*" mode="attachment"/>
+
+	<xsl:template match="cbc:ID" mode="common">
+		<small><xsl:value-of select="@schemeID"/>:</small> <xsl:value-of select="text()"/>
+	</xsl:template>
+
+	<xsl:template match="cbc:*[substring(local-name(), string-length(local-name()) - 5) = 'Amount']" mode="common">
+		<xsl:value-of select="format-number(text(), '###,##0.00')"/> <small><xsl:value-of select="@currencyID"/></small>
+	</xsl:template>
+
+	<xsl:template match="cac:*[substring(local-name(), string-length(local-name()) - 5) = 'Period']" mode="common">
+		<xsl:apply-templates select="cbc:StartDate" mode="common"/> - <xsl:apply-templates select="cbc:EndDate" mode="common"/>
+	</xsl:template>
+
+	<xsl:template match="cac:*[substring(local-name(), string-length(local-name()) - 3) = 'Date']" mode="common">
+		<xsl:value-of select="text()"/>
+	</xsl:template>
+
+	<xsl:template match="cac:*[substring(local-name(), string-length(local-name()) - 10) = 'TaxCategory']" mode="common">
+		<small><xsl:value-of select="cac:TaxScheme/cbc:ID"/>:</small> <xsl:value-of select="cbc:ID"/>
+		<small> (<xsl:value-of select="cbc:Percent"/>%)</small>
+		<xsl:if test="cbc:TaxExemptionReason">
+			<br/><small><xsl:value-of select="cbc:TaxExemptionReason"/></small>
+		</xsl:if>
+	</xsl:template>
+
+	<xsl:template match="cbc:*[substring(local-name(), string-length(local-name()) - 7) = 'Quantity']" mode="common">
+		<xsl:value-of select="text()"/> <small><xsl:value-of select="@unitCode"/></small>
+	</xsl:template>
+
+	<xsl:template match="cbc:Note" mode="common">
+		<p class="note">
+			<xsl:call-template name="replace-newlines">
+				<xsl:with-param name="text" select="text()"/>
+			</xsl:call-template>
+		</p>
+	</xsl:template>
+
+	<xsl:template name="delivery-block">
+		<h3>
+			<xsl:call-template name="label">
+				<xsl:with-param name="part" select="'delivery'"/>
+				<xsl:with-param name="value" select="'Delivery'"/>
+			</xsl:call-template>
+		</h3>
+		<xsl:apply-templates select="cac:Delivery" mode="delivery"/>
+	</xsl:template>
+
+	<xsl:template match="cac:Delivery" mode="delivery">
+		<div style="margin-bottom: 10pt;">
+			<dl>
+				<xsl:apply-templates select="cbc:ActualDeliveryDate" mode="delivery"/>
+				<xsl:apply-templates select="cac:DeliveryLocation/cbc:ID" mode="delivery"/>
+				<xsl:apply-templates select="cac:DeliveryLocation/cac:Address" mode="delivery"/>
+			</dl>
+		</div>
+	</xsl:template>
+
+	<xsl:template match="cbc:ActualDeliveryDate" mode="delivery">
+		<dt>
+			<xsl:call-template name="label">
+				<xsl:with-param name="part" select="'delivery'"/>
+				<xsl:with-param name="value" select="'DeliveryDate'"/>
+			</xsl:call-template>
+		</dt>
+		<dd><xsl:value-of select="text()"/></dd>
+	</xsl:template>
+
+	<xsl:template match="cbc:ID" mode="delivery">
+		<dt>
+			<xsl:call-template name="label">
+				<xsl:with-param name="part" select="'delivery'"/>
+				<xsl:with-param name="value" select="'DeliveryID'"/>
+			</xsl:call-template>
+		</dt>
+		<dd><xsl:apply-templates select="current()" mode="common"/></dd>
+	</xsl:template>
+
+	<xsl:template match="cac:Address" mode="delivery">
+		<dt>
+			<xsl:call-template name="label">
+				<xsl:with-param name="part" select="'delivery'"/>
+				<xsl:with-param name="value" select="'Address'"/>
+			</xsl:call-template>
+		</dt>
+		<dd>
+			<div><xsl:value-of select="cbc:StreetName"/></div>
+			<div><xsl:value-of select="cbc:AdditionalStreetName"/></div>
+			<div><span><xsl:value-of select="cbc:PostalZone"/></span> <span><xsl:value-of select="cbc:CityName"/></span></div>
+			<div><xsl:value-of select="cbc:CountrySubentity"/></div>
+			<div>
+				<xsl:call-template name="codelist">
+					<xsl:with-param name="codelist" select="'iso3166'"/>
+					<xsl:with-param name="code" select="cac:Country/cbc:IdentificationCode/text()"/>
+				</xsl:call-template>
+			</div>
+		</dd>
+	</xsl:template>
+
+	<xsl:template match="cac:Item" mode="item-info">
+		<xsl:apply-templates select="cbc:Name" mode="item-info"/>
+		<xsl:apply-templates select="cbc:Description" mode="item-info"/>
+	</xsl:template>
+
+	<xsl:template match="cbc:Name" mode="item-info">
+		<div><strong><xsl:value-of select="text()"/></strong></div>
+	</xsl:template>
+
+	<xsl:template match="cbc:Description" mode="item-info">
+		<div><xsl:value-of select="text()"/></div>
+	</xsl:template>
+
+	<xsl:template match="cac:Item" mode="item-details">
+		<xsl:apply-templates select="*" mode="item-details"/>
+	</xsl:template>
+
+	<xsl:template match="cac:BuyersItemIdentification | cac:SellersItemIdentification | cac:StandardItemIdentification" mode="item-details">
+		<dt>
+			<xsl:call-template name="label">
+				<xsl:with-param name="part" select="'item'"/>
+				<xsl:with-param name="value" select="local-name()"/>
+			</xsl:call-template>
+		</dt>
+		<dd>
+			<xsl:choose>
+				<xsl:when test="local-name() = 'StandardItemIdentification'">
+					<xsl:apply-templates select="cbc:ID" mode="common"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:value-of select="cbc:ID"/>
+				</xsl:otherwise>
+			</xsl:choose>
+		</dd>
+	</xsl:template>
+
+	<xsl:template match="cac:CommodityClassification" mode="item-details">
+		<dt>
+			<xsl:call-template name="label">
+				<xsl:with-param name="part" select="'item'"/>
+				<xsl:with-param name="value" select="'CommodityClassification'"/>
+			</xsl:call-template>
+		</dt>
+		<dd><small><xsl:value-of select="cbc:ItemClassificationCode/@listID"/>:</small> <xsl:value-of select="cbc:ItemClassificationCode"/></dd>
+	</xsl:template>
+
+	<xsl:template match="cac:OriginCountry" mode="item-details">
+		<dt>
+			<xsl:call-template name="label">
+				<xsl:with-param name="part" select="'item'"/>
+				<xsl:with-param name="value" select="'OriginCountry'"/>
+			</xsl:call-template>
+		</dt>
+		<dd>
+			<xsl:call-template name="codelist">
+				<xsl:with-param name="codelist" select="'iso3166'"/>
+				<xsl:with-param name="code" select="cbc:IdentificationCode/text()"/>
+			</xsl:call-template>
+		</dd>
+	</xsl:template>
+
+	<xsl:template match="cac:ClassifiedTaxCategory | cbc:Name | cbc:Description | cac:AdditionalItemProperty" mode="item-details"/>
+	<xsl:template match="*" mode="item-details"><div>[<xsl:value-of select="local-name()"/>]</div></xsl:template>
+
+	<xsl:template match="cac:AdditionalItemProperty" mode="item-properties">
+		<dt><xsl:value-of select="cbc:Name"/></dt>
+		<dd><xsl:value-of select="cbc:Value"/></dd>
+	</xsl:template>
+
+	<xsl:template match="cac:AllowanceCharge[cbc:ChargeIndicator='false']" mode="line">
+		<div class="row">
+			<div class="col-sm-11 col-sm-offset-1">
+				<xsl:value-of select="cbc:AllowanceChargeReason"/>
+				<xsl:if test="cbc:AllowanceChargeReasonCode"> <small>(<xsl:value-of select="cbc:AllowanceChargeReasonCode"/>)</small></xsl:if>
+			</div>
+		</div>
+		<div class="linetotal">
+			<div class="row">
+				<div class="col-sm-7 col-sm-offset-1">
+					<xsl:call-template name="label">
+						<xsl:with-param name="part" select="'line'"/>
+						<xsl:with-param name="value" select="'Allowance'"/>
+					</xsl:call-template>
+				</div>
+				<div class="col-sm-2">
+					<xsl:apply-templates select="cac:TaxCategory" mode="common"/>
+				</div>
+				<div class="col-sm-2 text-right">-<xsl:apply-templates select="cbc:Amount" mode="common"/></div>
+			</div>
+		</div>
+	</xsl:template>
+
+	<xsl:template match="cac:AllowanceCharge[cbc:ChargeIndicator='true']" mode="line">
+		<div class="row">
+			<div class="col-sm-11 col-sm-offset-1">
+				<xsl:value-of select="cbc:AllowanceChargeReason"/>
+				<xsl:if test="cbc:AllowanceChargeReasonCode"> <small>(<xsl:value-of select="cbc:AllowanceChargeReasonCode"/>)</small></xsl:if>
+			</div>
+		</div>
+		<div class="linetotal">
+			<div class="row">
+				<div class="col-sm-7 col-sm-offset-1">
+					<xsl:call-template name="label">
+						<xsl:with-param name="part" select="'line'"/>
+						<xsl:with-param name="value" select="'Charge'"/>
+					</xsl:call-template>
+				</div>
+				<div class="col-sm-2">
+					<xsl:apply-templates select="cac:TaxCategory" mode="common"/>
+				</div>
+				<div class="col-sm-2 text-right">
+					<xsl:apply-templates select="cbc:Amount" mode="common"/>
+				</div>
+			</div>
+		</div>
+	</xsl:template>
+
+	<xsl:template match="cac:InvoiceLine | cac:CreditNoteLine" mode="line">
+		<div class="line">
+			<div class="number"><xsl:value-of select="cbc:ID"/></div>
+			<div class="col-sm-10">
+				<div class="row">
+					<div class="info col-sm-6">
+						<xsl:apply-templates select="cac:Item" mode="item-info"/>
+						<xsl:apply-templates select="cbc:Note" mode="common"/>
+						<xsl:if test="cac:InvoicePeriod | cac:OrderLineReference | cac:DocumentReference">
+							<dl>
+								<xsl:if test="cac:InvoicePeriod">
+									<dt>
+										<xsl:call-template name="label">
+											<xsl:with-param name="part" select="'line'"/>
+											<xsl:with-param name="value" select="'InvoicePeriod'"/>
+										</xsl:call-template>
+									</dt>
+									<dd><xsl:apply-templates select="cac:InvoicePeriod" mode="common"/></dd>
+								</xsl:if>
+								<xsl:if test="normalize-space(cac:OrderLineReference/cbc:LineID/text())">
+									<dt>
+										<xsl:call-template name="label">
+											<xsl:with-param name="part" select="'line'"/>
+											<xsl:with-param name="value" select="'OrderLineReference'"/>
+										</xsl:call-template>
+									</dt>
+									<dd><xsl:value-of select="cac:OrderLineReference/cbc:LineID"/></dd>
+								</xsl:if>
+								<xsl:if test="cac:DocumentReference">
+									<dt>
+										<xsl:call-template name="label">
+											<xsl:with-param name="part" select="'line'"/>
+											<xsl:with-param name="value" select="'DocumentReference'"/>
+										</xsl:call-template>
+									</dt>
+									<dd><xsl:apply-templates select="cac:DocumentReference/cbc:ID" mode="common"/></dd>
+								</xsl:if>
+							</dl>
+						</xsl:if>
+					</div>
+					<div class="details col-sm-6">
+						<xsl:if test="cac:Item/cac:AdditionalItemProperty">
+							<dl>
+								<xsl:apply-templates select="cac:Item/cac:AdditionalItemProperty" mode="item-properties"/>
+							</dl>
+						</xsl:if>
+						<dl>
+							<xsl:apply-templates select="cac:Item" mode="item-details"/>
+						</dl>
+					</div>
+				</div>
+				<xsl:apply-templates select="cac:Price" mode="line"/>
+				<xsl:apply-templates select="cac:AllowanceCharge" mode="line-ac"/>
+			</div>
+		</div>
+		<div class="linetotal">
+			<div class="row">
+				<div class="col-sm-3 col-sm-offset-1">
+					<xsl:apply-templates select="cbc:InvoicedQuantity" mode="common"/>
+				</div>
+				<div class="col-sm-4"><xsl:value-of select="cbc:AccountingCost"/></div>
+				<div class="col-sm-2">
+					<xsl:apply-templates select="cac:Item/cac:ClassifiedTaxCategory" mode="common"/>
+				</div>
+				<div class="col-sm-2 text-right">
+					<xsl:apply-templates select="cbc:LineExtensionAmount" mode="common"/>
+				</div>
+			</div>
+		</div>
+	</xsl:template>
+
+	<xsl:template match="cac:Price" mode="line">
+		<div class="linesupport">
+			<div class="row">
+				<div class="col-sm-9">Price á <xsl:apply-templates select="cbc:BaseQuantity" mode="common"/></div>
+				<div class="col-sm-3 text-right">
+					<xsl:apply-templates select="cbc:PriceAmount" mode="common"/>
+				</div>
+			</div>
+		</div>
+	</xsl:template>
+
+	<xsl:template match="cac:AllowanceCharge[cbc:ChargeIndicator='true']" mode="line-ac">
+		<div class="linesupport">
+			<div class="row">
+				<div class="col-sm-9">
+					<xsl:call-template name="label">
+						<xsl:with-param name="part" select="'line'"/>
+						<xsl:with-param name="value" select="'ChargeIncluded'"/>
+					</xsl:call-template>: <xsl:value-of select="cbc:AllowanceChargeReason"/>
+				</div>
+				<div class="col-sm-3 text-right">
+					<xsl:apply-templates select="cbc:Amount" mode="common"/>
+				</div>
+			</div>
+		</div>
+	</xsl:template>
+
+	<xsl:template match="cac:AllowanceCharge[cbc:ChargeIndicator='false']" mode="line-ac">
+		<div class="linesupport">
+			<div class="row">
+				<div class="col-sm-9">
+					<xsl:call-template name="label">
+						<xsl:with-param name="part" select="'line'"/>
+						<xsl:with-param name="value" select="'AllowanceIncluded'"/>
+					</xsl:call-template>: <xsl:value-of select="cbc:AllowanceChargeReason"/>
+				</div>
+				<div class="col-sm-3 text-right">-<xsl:apply-templates select="cbc:Amount" mode="common"/></div>
+			</div>
+		</div>
+	</xsl:template>
+
+	<xsl:template match="cbc:LineExtensionAmount | cbc:ChargeTotalAmount" mode="line">
+		<div class="total">
+			<div class="row">
+				<div class="col-xs-6 col-sm-8 col-sm-offset-1">
+					<xsl:call-template name="label">
+						<xsl:with-param name="part" select="'line'"/>
+						<xsl:with-param name="value" select="local-name()"/>
+					</xsl:call-template>
+				</div>
+				<div class="col-xs-6 col-sm-2 col-sm-offset-1 text-right">
+					<xsl:apply-templates select="current()" mode="common"/>
+				</div>
+			</div>
+		</div>
+	</xsl:template>
+
+	<xsl:template match="cbc:AllowanceTotalAmount" mode="line">
+		<div class="total">
+			<div class="row">
+				<div class="col-xs-6 col-sm-8 col-sm-offset-1">
+					<xsl:call-template name="label">
+						<xsl:with-param name="part" select="'line'"/>
+						<xsl:with-param name="value" select="local-name()"/>
+					</xsl:call-template>
+				</div>
+				<div class="col-xs-6 col-sm-2 col-sm-offset-1 text-right">-<xsl:apply-templates select="current()" mode="common"/></div>
+			</div>
+		</div>
+	</xsl:template>
+
+	<xsl:template name="metadata">
+		<h3>
+			<xsl:call-template name="label">
+				<xsl:with-param name="part" select="'metadata'"/>
+				<xsl:with-param name="value" select="'Metadata'"/>
+			</xsl:call-template>
+		</h3>
+		<dl>
+			<xsl:apply-templates select="cbc:ID" mode="metadata-detail"/>
+			<xsl:apply-templates select="cbc:BuyerReference" mode="metadata-detail"/>
+			<xsl:apply-templates select="cac:ProjectReference" mode="metadata-detail"/>
+			<xsl:apply-templates select="cbc:IssueDate" mode="metadata-detail"/>
+			<xsl:apply-templates select="cbc:DueDate" mode="metadata-detail"/>
+			<xsl:apply-templates select="cbc:TaxPointDate" mode="metadata-detail"/>
+			<xsl:apply-templates select="cac:InvoicePeriod" mode="metadata-detail"/>
+			<xsl:apply-templates select="cbc:AccountingCost" mode="metadata-detail"/>
+			<xsl:apply-templates select="cac:OrderReference" mode="metadata-detail"/>
+			<xsl:apply-templates select="cac:BillingReference" mode="metadata-detail-exact"/>
+			<xsl:apply-templates select="cac:DespatchDocumentReference" mode="metadata-detail"/>
+			<xsl:apply-templates select="cac:ReceiptDocumentReference" mode="metadata-detail"/>
+			<xsl:apply-templates select="cac:OriginatorDocumentReference" mode="metadata-detail"/>
+			<xsl:apply-templates select="cac:ContractDocumentReference" mode="metadata-detail"/>
+			<xsl:apply-templates select="cac:AdditionalDocumentReference[cbc:ID[@schemeID]]" mode="metadata-detail-exact"/>
+			<xsl:apply-templates select="cbc:DocumentCurrencyCode" mode="metadata-detail"/>
+			<xsl:apply-templates select="cbc:TaxCurrencyCode" mode="metadata-detail"/>
+		</dl>
+	</xsl:template>
+
+	<xsl:template match="cac:BillingReference" mode="metadata-detail-exact">
+		<xsl:for-each select="cac:InvoiceDocumentReference">
+			<xsl:apply-templates select="." mode="metadata-detail"/>
+		</xsl:for-each>
+	</xsl:template>
+
+	<xsl:template match="cac:AdditionalDocumentReference" mode="metadata-detail-exact">
+		<dt>
+			<xsl:call-template name="label">
+				<xsl:with-param name="part" select="'metadata'"/>
+				<xsl:with-param name="value" select="'ObjectIdentifier'"/>
+			</xsl:call-template>
+		</dt>
+		<dd><small><xsl:value-of select="cbc:ID/@schemeID"/>:</small> <xsl:value-of select="cbc:ID"/></dd>
+	</xsl:template>
+
+	<xsl:template match="cac:*[substring(local-name(), string-length(local-name()) - 5) = 'Period']" mode="metadata-detail">
+		<dt>
+			<xsl:call-template name="label">
+				<xsl:with-param name="part" select="'metadata'"/>
+				<xsl:with-param name="value" select="local-name()"/>
+			</xsl:call-template>
+		</dt>
+		<dd>
+			<xsl:apply-templates select="current()" mode="common"/>
+			<xsl:if test="cbc:DescriptionCode"><span> (<xsl:value-of select="cbc:DescriptionCode"/>)</span></xsl:if>
+		</dd>
+	</xsl:template>
+
+	<xsl:template match="cac:*[substring(local-name(), string-length(local-name()) - 8) = 'Reference']" mode="metadata-detail">
+		<dt>
+			<xsl:call-template name="label">
+				<xsl:with-param name="part" select="'metadata'"/>
+				<xsl:with-param name="value" select="local-name()"/>
+			</xsl:call-template>
+		</dt>
+		<dd>
+			<xsl:value-of select="cbc:ID"/>
+			<xsl:if test="cbc:IssueDate"><span> (<xsl:value-of select="cbc:IssueDate"/>)</span></xsl:if>
+		</dd>
+	</xsl:template>
+
+	<xsl:template match="cbc:*" mode="metadata-detail">
+		<dt>
+			<xsl:call-template name="label">
+				<xsl:with-param name="part" select="'metadata'"/>
+				<xsl:with-param name="value" select="local-name()"/>
+			</xsl:call-template>
+		</dt>
+		<dd><xsl:value-of select="text()"/></dd>
+	</xsl:template>
+
+	<xsl:template match="cac:*" mode="metadata-detail">
+		<dt>
+			<xsl:call-template name="label">
+				<xsl:with-param name="part" select="'metadata'"/>
+				<xsl:with-param name="value" select="local-name()"/>
+			</xsl:call-template>
+		</dt>
+		<dd><xsl:value-of select="current()"/></dd>
+	</xsl:template>
+
+	<xsl:template match="cac:Party | cac:PayeeParty | cac:TaxRepresentativeParty" mode="party-with-contact">
+		<div class="row">
+			<div class="col-md-7">
+				<xsl:if test="cac:PartyName | cac:PostalAddress">
+					<div style="margin-bottom: 10pt;">
+						<xsl:apply-templates select="cac:PartyName" mode="party"/>
+						<xsl:apply-templates select="cac:PostalAddress" mode="party"/>
+					</div>
+				</xsl:if>
+				<xsl:if test="cac:PartyLegalEntity">
+					<div style="margin-bottom: 10pt;">
+						<xsl:apply-templates select="cac:PartyLegalEntity" mode="party"/>
+					</div>
+				</xsl:if>
+			</div>
+			<div class="col-md-5">
+				<xsl:apply-templates select="cac:Contact" mode="party"/>
+			</div>
+		</div>
+		<xsl:if test="cbc:EndpointID | cac:PartyLegalEntity/cbc:CompanyID | cac:PartyIdentification | cac:PartyTaxScheme">
+			<dl style="margin-bottom: 10pt;">
+				<xsl:apply-templates select="cac:PartyIdentification[cbc:ID[@schemeID]]" mode="party"/>
+				<xsl:apply-templates select="cac:PartyIdentification[cbc:ID[not(@schemeID)]]" mode="party"/>
+				<xsl:apply-templates select="cac:PartyTaxScheme" mode="party"/>
+				<xsl:apply-templates select="cbc:EndpointID" mode="party"/>
+			</dl>
+		</xsl:if>
+	</xsl:template>
+
+	<xsl:template match="cac:Party | cac:PayeeParty | cac:TaxRepresentativeParty" mode="party">
+		<xsl:if test="cac:PartyName | cac:PostalAddress">
+			<div style="margin-bottom: 10pt;">
+				<xsl:apply-templates select="cac:PartyName" mode="party"/>
+				<xsl:apply-templates select="cac:PartyLegalEntity/cbc:RegistrationName" mode="party"/>
+				<xsl:apply-templates select="cac:PostalAddress" mode="party"/>
+			</div>
+		</xsl:if>
+		<xsl:if test="cbc:EndpointID | cac:PartyIdentification | cac:PartyTaxScheme">
+			<dl style="margin-bottom: 10pt;">
+				<xsl:apply-templates select="cac:PartyLegalEntity/cbc:CompanyID" mode="party"/>
+				<xsl:apply-templates select="cac:PartyIdentification[cbc:ID[@schemeID]]" mode="party"/>
+				<xsl:apply-templates select="cac:PartyIdentification[cbc:ID[not(@schemeID)]]" mode="party"/>
+				<xsl:apply-templates select="cac:PartyTaxScheme" mode="party"/>
+				<xsl:apply-templates select="cbc:EndpointID" mode="party"/>
+			</dl>
+		</xsl:if>
+	</xsl:template>
+
+	<xsl:template match="cac:PartyName" mode="party">
+		<div><strong><xsl:value-of select="cbc:Name"/></strong></div>
+	</xsl:template>
+
+	<xsl:template match="cac:PostalAddress" mode="party">
+		<xsl:if test="cbc:StreetName"><div><xsl:value-of select="cbc:StreetName"/></div></xsl:if>
+		<xsl:if test="cbc:AdditionalStreetName"><div><xsl:value-of select="cbc:AdditionalStreetName"/></div></xsl:if>
+		<xsl:if test="cac:AddressLine">
+			<xsl:for-each select="cac:AddressLine"><div><xsl:value-of select="cbc:Line"/></div></xsl:for-each>
+		</xsl:if>
+		<xsl:if test="cbc:PostalZone and cbc:CityName">
+			<div><span><xsl:value-of select="cbc:PostalZone"/></span> <span><xsl:value-of select="cbc:CityName"/></span></div>
+		</xsl:if>
+		<xsl:if test="cbc:CountrySubentity"><div><xsl:value-of select="cbc:CountrySubentity"/></div></xsl:if>
+		<xsl:if test="cac:Country">
+			<div>
+				<xsl:call-template name="codelist">
+					<xsl:with-param name="codelist" select="'iso3166'"/>
+					<xsl:with-param name="code" select="cac:Country/cbc:IdentificationCode/text()"/>
+				</xsl:call-template>
+			</div>
+		</xsl:if>
+	</xsl:template>
+
+	<xsl:template match="cac:PartyIdentification[cbc:ID[@schemeID]]" mode="party">
+		<dt>
+			<xsl:call-template name="label">
+				<xsl:with-param name="part" select="'party'"/>
+				<xsl:with-param name="value" select="local-name()"/>
+			</xsl:call-template>
+		</dt>
+		<dd><xsl:apply-templates select="cbc:ID" mode="common"/></dd>
+	</xsl:template>
+
+	<xsl:template match="cac:PartyIdentification[cbc:ID[not(@schemeID)]]" mode="party">
+		<dt>
+			<xsl:call-template name="label">
+				<xsl:with-param name="part" select="'party'"/>
+				<xsl:with-param name="value" select="'BankingReference'"/>
+			</xsl:call-template>
+		</dt>
+		<dd><xsl:value-of select="cbc:ID"/></dd>
+	</xsl:template>
+
+	<xsl:template match="cac:PartyLegalEntity" mode="party">
+		<div><strong><xsl:value-of select="cbc:RegistrationName"/></strong> (<xsl:value-of select="cbc:CompanyLegalForm"/>)</div>
+		<div><small><xsl:value-of select="cbc:CompanyID/@schemeID"/>:</small> <xsl:value-of select="cbc:CompanyID"/></div>
+	</xsl:template>
+
+	<xsl:template match="cac:PartyLegalEntity/cbc:CompanyID" mode="party">
+		<dt>Legal Company Identifier</dt>
+		<dd><xsl:value-of select="text()"/></dd>
+	</xsl:template>
+
+	<xsl:template match="cac:PartyTaxScheme" mode="party">
+		<dt>
+			<xsl:call-template name="label">
+				<xsl:with-param name="part" select="'party'"/>
+				<xsl:with-param name="value" select="local-name()"/>
+			</xsl:call-template>
+		</dt>
+		<dd><small><xsl:value-of select="cac:TaxScheme/cbc:ID"/>:</small> <xsl:value-of select="cbc:CompanyID"/></dd>
+	</xsl:template>
+
+	<xsl:template match="cbc:EndpointID" mode="party">
+		<dt>
+			<xsl:call-template name="label">
+				<xsl:with-param name="part" select="'party'"/>
+				<xsl:with-param name="value" select="local-name()"/>
+			</xsl:call-template>
+		</dt>
+		<dd><small><xsl:value-of select="@schemeID"/>:</small> <xsl:value-of select="text()"/></dd>
+	</xsl:template>
+
+	<xsl:template match="cac:Contact" mode="party">
+		<div style="margin-bottom: 10pt;">
+			<div><xsl:value-of select="cbc:Name"/></div>
+			<div>tlf: <xsl:value-of select="cbc:Telephone"/></div>
+			<div><a href="mailto:{cbc:ElectronicMail}"><xsl:value-of select="cbc:ElectronicMail"/></a></div>
+		</div>
+	</xsl:template>
+
+	<xsl:template match="cac:PaymentMeans" mode="payment">
+		<div class="row">
+			<div class="col-sm-2"><xsl:value-of select="cbc:PaymentMeansCode"/></div>
+			<div class="col-sm-10">
+				<dl class="row" style="display: block;">
+					<div style="margin-bottom: 8px;"><strong>Payment ID:</strong> <xsl:value-of select="cbc:PaymentID"/></div>
+					<div><strong>Account:</strong> <xsl:value-of select="cac:PayeeFinancialAccount/cbc:ID"/> (<xsl:value-of select="cac:PayeeFinancialAccount/cac:FinancialInstitutionBranch/cbc:ID"/>)</div>
+				</dl>
+			</div>
+		</div>
+	</xsl:template>
+
+	<xsl:template match="cac:PaymentTerms" mode="payment">
+		<xsl:apply-templates select="cbc:Note" mode="common"/>
+	</xsl:template>
+
+	<xsl:template match="cac:TaxTotal" mode="tax">
+		<table>
+			<thead>
+				<tr>
+					<th>
+						<xsl:call-template name="label">
+							<xsl:with-param name="part" select="'tax'"/>
+							<xsl:with-param name="value" select="'Category'"/>
+						</xsl:call-template>
+					</th>
+					<th style="width: 20%;">
+						<xsl:call-template name="label">
+							<xsl:with-param name="part" select="'tax'"/>
+							<xsl:with-param name="value" select="'TaxableAmount'"/>
+						</xsl:call-template>
+					</th>
+					<th style="width: 20%;">
+						<xsl:call-template name="label">
+							<xsl:with-param name="part" select="'tax'"/>
+							<xsl:with-param name="value" select="'TaxAmount'"/>
+						</xsl:call-template>
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+				<xsl:apply-templates select="cac:TaxSubtotal" mode="tax"/>
+			</tbody>
+			<tfoot>
+				<xsl:apply-templates select="cbc:TaxAmount" mode="tax"/>
+				<xsl:apply-templates select="../cac:TaxTotal[not(cac:TaxSubtotal)]/cbc:TaxAmount" mode="tax"/>
+			</tfoot>
+		</table>
+	</xsl:template>
+
+	<xsl:template match="cac:TaxSubtotal" mode="tax">
+		<tr>
+			<td><xsl:apply-templates select="cac:TaxCategory" mode="common"/></td>
+			<td class="text-right"><xsl:apply-templates select="cbc:TaxableAmount" mode="common"/></td>
+			<td class="text-right"><xsl:apply-templates select="cbc:TaxAmount" mode="common"/></td>
+		</tr>
+	</xsl:template>
+
+	<xsl:template match="cbc:TaxAmount" mode="tax">
+		<tr>
+			<td colspan="2">
+				<xsl:call-template name="label">
+					<xsl:with-param name="part" select="'tax'"/>
+					<xsl:with-param name="value" select="'Total'"/>
+				</xsl:call-template>
+			</td>
+			<td class="text-right"><xsl:apply-templates select="." mode="common"/></td>
+		</tr>
+	</xsl:template>
+
+	<xsl:template match="cac:LegalMonetaryTotal" mode="total">
+		<h3>
+			<xsl:call-template name="label">
+				<xsl:with-param name="part" select="'total'"/>
+				<xsl:with-param name="value" select="'Totals'"/>
+			</xsl:call-template>
+		</h3>
+		<dl>
+			<xsl:apply-templates select="cbc:TaxExclusiveAmount | cbc:TaxInclusiveAmount | cbc:PrepaidAmount | cbc:PayableRoundingAmount | cbc:PayableAmount" mode="total"/>
+		</dl>
+	</xsl:template>
+
+	<xsl:template match="cbc:PayableAmount" mode="total">
+		<dt>
+			<xsl:call-template name="label">
+				<xsl:with-param name="part" select="'total'"/>
+				<xsl:with-param name="value" select="local-name()"/>
+			</xsl:call-template>
+		</dt>
+		<dd><strong><xsl:apply-templates select="current()" mode="common"/></strong></dd>
+	</xsl:template>
+
+	<xsl:template match="cbc:*" mode="total">
+		<dt>
+			<xsl:call-template name="label">
+				<xsl:with-param name="part" select="'total'"/>
+				<xsl:with-param name="value" select="local-name()"/>
+			</xsl:call-template>
+		</dt>
+		<dd><xsl:apply-templates select="current()" mode="common"/></dd>
+	</xsl:template>
+
+	<xsl:template match="*" mode="document">
+		<html lang="{$language}">
+			<head>
+				<xsl:call-template name="doc-head"/>
+				<title>Unknown document type</title>
+			</head>
+			<body>
+				<div id="document">
+					<h1>Unknown document type</h1>
+					<p class="lead">The document you tried to render was not recognized.</p>
+				</div>
+			</body>
+		</html>
+	</xsl:template>
+</xsl:stylesheet>

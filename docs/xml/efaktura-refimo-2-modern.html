@@ -1,0 +1,117 @@
+<html lang="sk"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Faktúra č. 26VF00035</title><style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+@page { size: A4 portrait; margin: 15mm 12mm; }
+body { font-family: 'Arial', 'Helvetica', sans-serif; font-size: 11px; line-height: 1.4; color: #000; background: #fff; }
+.invoice-container { width: 190mm; margin: 0 auto; padding: 5mm; }
+.invoice-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 2px solid #000; }
+.invoice-title { font-size: 18px; font-weight: bold; }
+.invoice-subtitle { font-size: 11px; font-weight: normal; color: #333; }
+.party-section { display: flex; gap: 10px; margin-bottom: 10px; }
+.party-box { flex: 1; border: 1px solid #000; padding: 8px; }
+.party-box-title { font-weight: bold; font-size: 11px; margin-bottom: 6px; text-transform: uppercase; border-bottom: 1px solid #000; padding-bottom: 3px; }
+.party-box .company-name { font-weight: bold; font-size: 12px; margin-bottom: 4px; }
+.party-box .address-line { margin-bottom: 1px; }
+.party-box .id-line { margin-top: 4px; }
+.party-box .id-line span { display: inline-block; width: 55px; font-weight: bold; }
+.party-box .section-label { margin-top: 7px; font-weight: bold; color: #333; }
+.party-box .contact-line { margin-top: 2px; overflow-wrap: anywhere; }
+.payment-section { border: 1px solid #000; padding: 8px; margin-bottom: 10px; }
+.payment-table { width: 100%; border-collapse: collapse; }
+.payment-table td { padding: 2px 4px; font-size: 11px; }
+.payment-table .label { font-weight: bold; width: 140px; white-space: nowrap; }
+.lines-title { font-weight: bold; font-size: 12px; margin: 12px 0 6px 0; padding: 4px 0; border-bottom: 1px solid #000; }
+.lines-table { width: 100%; border-collapse: collapse; margin-bottom: 10px; font-size: 10px; }
+.lines-table th { background: #e8e8e8; border: 1px solid #000; padding: 4px 3px; font-size: 9px; font-weight: bold; text-align: center; vertical-align: middle; }
+.lines-table td { border: 1px solid #000; padding: 4px 3px; vertical-align: top; }
+.lines-table .num { text-align: center; }
+.lines-table .right { text-align: right; }
+.lines-table .left { text-align: left; }
+.lines-table .item-name { font-weight: bold; }
+.tax-section { width: 50%; margin-left: auto; margin-bottom: 10px; }
+.tax-title { font-weight: bold; font-size: 11px; margin-bottom: 4px; }
+.tax-table { width: 100%; border-collapse: collapse; font-size: 10px; }
+.tax-table th { background: #e8e8e8; border: 1px solid #000; padding: 4px 6px; font-weight: bold; text-align: center; }
+.tax-table td { border: 1px solid #000; padding: 4px 6px; }
+.tax-table .right { text-align: right; }
+.tax-table .left { text-align: left; }
+
+/* Totals + QR section */
+.totals-qr-section { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; gap: 15px; }
+.qr-section { text-align: center; padding: 8px; border: 1px solid #ccc; border-radius: 4px; background: #fafafa; }
+.qr-section img { display: block; margin: 0 auto 6px auto; }
+.qr-label { font-size: 9px; color: #555; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; }
+.qr-amount { font-size: 11px; font-weight: bold; margin-top: 4px; }
+.totals-box { width: 280px; border: 2px solid #000; padding: 8px; }
+.totals-table { width: 100%; border-collapse: collapse; }
+.totals-table td { padding: 3px 4px; font-size: 11px; }
+.totals-table .label { font-weight: bold; }
+.totals-table .value { text-align: right; font-weight: bold; }
+.totals-table .total-row td { border-top: 1px solid #000; font-size: 13px; font-weight: bold; padding-top: 6px; }
+.notes-section { margin: 10px 0; padding: 8px; border: 1px solid #999; background: #f9f9f9; font-size: 10px; }
+.notes-section .note-title { font-weight: bold; margin-bottom: 4px; }
+.system-note { margin-top: 15px; text-align: center; font-size: 9px; color: #666; font-style: italic; }
+@media print { body { font-size: 10px; } .invoice-container { width: 100%; padding: 0; } }
+@media screen { body { background: #f0f0f0; padding: 20px; } .invoice-container { background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.15); padding: 15mm; } }
+				/* Modern UI and print-mode overrides */
+				:root { --ink: #172033; --muted: #667085; --line: #dbe2ea; --accent: #2563eb; --soft: #f5f7fb; }
+				body { color: var(--ink); background: linear-gradient(135deg, #eef4ff 0%, #f8fafc 55%, #eefbf7 100%); font-family: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Arial, sans-serif; font-size: 12px; }
+				.invoice-container { max-width: 980px; width: auto; margin: 24px auto; padding: 34px; border: 1px solid rgba(148,163,184,.28); border-radius: 18px; box-shadow: 0 18px 55px rgba(15,23,42,.12); }
+				.invoice-header { align-items: center; border-bottom: 0; margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid var(--line); }
+				.invoice-title { color: #102a56; font-size: 24px; letter-spacing: -.4px; }
+				.invoice-subtitle { color: var(--muted); margin-top: 5px; }
+				.party-section { gap: 16px; }
+				.party-box { background: rgba(255,255,255,.8); border: 1px solid var(--line); border-radius: 12px; padding: 16px; box-shadow: 0 5px 18px rgba(15,23,42,.05); }
+				.party-box:first-child { border-top: 4px solid var(--accent); }
+				.party-box:last-child { border-top: 4px solid #10b981; }
+				.party-box-title { color: #344054; font-size: 12px; letter-spacing: .7px; }
+				.party-box .company-name { color: #102a56; font-size: 15px; }
+				.party-box .section-label { color: #475467; border-bottom: 1px solid #edf0f4; padding-bottom: 3px; }
+				.payment-section, .notes-section { background: var(--soft); border: 1px solid var(--line); border-radius: 12px; }
+				.payment-table td { padding: 5px 7px; }
+				.payment-table .label { color: #475467; }
+				.lines-title { color: #102a56; border-bottom: 2px solid var(--accent); }
+				.lines-table, .tax-table { border-radius: 10px; overflow: hidden; }
+				.lines-table th, .tax-table th { background: #eaf1ff; color: #243b64; border-color: #cbd8ee; }
+				.lines-table td, .tax-table td { border-color: #dbe2ea; }
+				.lines-table tbody tr:nth-child(even) td { background: #fafcff; }
+				.totals-qr-section { align-items: stretch; }
+				.qr-section { background: #f8fffc; border: 1px solid #b7ead5; border-radius: 12px; }
+				.totals-box { border: 2px solid #102a56; border-radius: 12px; background: #fff; }
+				.total-row td { color: #102a56; }
+				.print-switch { display: inline-flex; align-items: center; gap: 9px; padding: 9px 12px; border: 1px solid var(--line); border-radius: 999px; background: #fff; color: #344054; font-size: 11px; cursor: pointer; user-select: none; }
+				.print-switch input { position: absolute; opacity: 0; pointer-events: none; }
+				.switch-track { position: relative; width: 34px; height: 20px; border-radius: 20px; background: #cbd5e1; transition: .2s ease; }
+				.switch-track::after { content: ''; position: absolute; top: 3px; left: 3px; width: 14px; height: 14px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.25); transition: .2s ease; }
+				.print-switch input:checked + .switch-track { background: var(--accent); }
+				.print-switch input:checked + .switch-track::after { transform: translateX(14px); }
+				@media (max-width: 720px) { .invoice-container { margin: 0; padding: 18px; border-radius: 0; } .party-section { flex-direction: column; } .payment-section { overflow-x: auto; } .payment-table { min-width: 640px; } .lines-table { font-size: 9px; } }
+			body.print-mode { background: #fff; padding: 20px; display: flex; justify-content: center; }
+			body.print-mode .invoice-container { width: 210mm; min-height: 297mm; margin: 0; max-width: none; border: 0; border-radius: 0; box-shadow: none; padding: 15mm; }
+			body.print-mode .print-switch { background: #f8fafc; }
+			@media print { body, body.print-mode { background: #fff; padding: 0; display: block; } .invoice-container, body.print-mode .invoice-container { width: 100%; min-height: 0; max-width: none; margin: 0; padding: 0; border: 0; border-radius: 0; box-shadow: none; } .print-switch { display: none; } .party-box { box-shadow: none; } }
+			</style></head><body><div class="invoice-container"><div class="invoice-header"><div><div class="invoice-title">Faktúra č.: 26VF00035</div><div class="invoice-subtitle">(Daňový doklad)</div></div></div><div class="party-section"><div class="party-box"><div class="party-box-title">Dodávateľ:</div><div class="company-name">REFIMO, s.r.o.</div><div class="address-line">Bešenova</div><div class="address-line">03483 Bešenova</div><div class="address-line">Slovensko</div><div class="id-line"><span>IČO:</span>44722893</div><div class="id-line"><span>DIČ:</span>2022802540</div><div class="id-line"><span>IČ DPH:</span>SK2022802540</div><div class="section-label">Adresa prevádzky:</div><div class="address-line">Bešenova 123</div><div class="address-line">03483 Bešenova</div><div class="section-label">Kontakt:</div><div class="contact-line">Obchodné oddelenie REFIMO</div><div class="contact-line">Tel.: +421 905 000 001</div><div class="contact-line">E-mail: obchod@refimo.example</div></div><div class="party-box"><div class="party-box-title">Odberateľ:</div><div class="company-name">Deloitte Audit s.r.o</div><div class="address-line">Apollo BC, Prievozská</div><div class="address-line">82109 Bratislava</div><div class="address-line">Slovensko</div><div class="id-line"><span>IČO:</span>36502154</div><div class="id-line"><span>DIČ:</span>2020325516</div><div class="id-line"><span>IČ DPH:</span>SK2020325516</div><div class="section-label">Adresa prevádzky:</div><div class="address-line">Prievozská 2</div><div class="address-line">82109 Bratislava</div><div class="section-label">Kontakt:</div><div class="contact-line">Účtovné oddelenie Deloitte Audit</div><div class="contact-line">Tel.: +421 905 000 002</div><div class="contact-line">E-mail: uctaren@deloitte-audit.example</div></div></div><div class="payment-section"><table class="payment-table"><tr><td class="label">Variabilný symbol:</td><td>2600035</td><td class="label">Dátum vyhotovenia:</td><td>07.07.2026</td></tr><tr><td class="label">Konštantný symbol:</td><td>0308</td><td class="label">Dátum splatnosti:</td><td>14.07.2026</td></tr><tr><td class="label">Forma úhrady:</td><td>Prevodný príkaz</td><td class="label">Dátum dodania:</td><td>07.07.2026</td></tr><tr><td class="label">IBAN:</td><td>SK64 0900 0000 00 033436 0567</td><td class="label">SWIFT:</td><td>GIBASKBX</td></tr><tr><td class="label">Názov bankového účtu:</td><td>REFIMO, s.r.o.</td><td class="label">Mena:</td><td>EUR</td></tr></table></div><div class="lines-title">Fakturujeme Vám za:</div><table class="lines-table"><thead><tr><th style="width:30px;">Číslo</th><th>Názov</th><th style="width:55px;">Množstvo</th><th style="width:35px;">MJ</th><th style="width:70px;">Cena za MJ</th><th style="width:75px;">Celkom bez DPH</th><th style="width:40px;">DPH %</th><th style="width:75px;">Cena za MJ s DPH</th><th style="width:75px;">Celkom s DPH</th></tr></thead><tbody><tr><td class="num">1</td><td class="left"><div class="item-name">Batéria alkalická 1,5 V /1 ks/</div></td><td class="right">1</td><td class="num">ks</td><td class="right">100,37</td><td class="right">100,37</td><td class="num">23%</td><td class="right">123,46</td><td class="right">123,46</td></tr><tr><td class="num">2</td><td class="left"><div class="item-name">Becherovka</div></td><td class="right">1</td><td class="num">l</td><td class="right">22,49</td><td class="right">22,49</td><td class="num">19%</td><td class="right">26,76</td><td class="right">26,76</td></tr></tbody></table><div class="tax-section"><div class="tax-title">Rekapitulácia DPH v EUR</div><table class="tax-table"><thead><tr><th class="left" style="width:40%;">Sadzba DPH</th><th class="right" style="width:30%;">Základ DPH</th><th class="right" style="width:30%;">DPH</th></tr></thead><tbody><tr><td class="left">Základná sadzba DPH 23%</td><td class="right">100,37</td><td class="right">23,08</td></tr><tr><td class="left">Znížená sadzba DPH 19%</td><td class="right">22,49</td><td class="right">4,27</td></tr></tbody></table></div><div class="totals-qr-section"><div class="qr-section"><div id="qrcode"></div><div class="qr-label">Pay by Square</div><div class="qr-amount">150,21 EUR</div></div><div class="totals-box"><table class="totals-table"><tr><td class="label">Celkom:</td><td class="value">150,21 EUR</td></tr><tr><td class="label">Záloha:</td><td class="value">0,00 EUR</td></tr><tr class="total-row"><td class="label">K úhrade:</td><td class="value">150,21 EUR</td></tr></table></div></div><div class="system-note">Spracované systémom e-Faktúra</div></div><script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script><script>
+				(function() {
+					var pbs = 'PAYBYSQUARE:1:'
+						+ 'SK6409000000000334360567:'
+						+ '150.21:'
+						+ 'EUR:'
+						+ '2600035:'
+						+ '0308'
+						+ '::::'
+						+ '20260714'
+						+ '::::::::'
+						+ '44722893:'
+						+ 'REFIMO, s.r.o.:'
+						+ 'Bešenova:'
+						+ '03483 Bešenova:'
+						+ 'Slovensko:::::';
+					try {
+						var qr = qrcode(0, 'M');
+						qr.addData(pbs);
+						qr.make();
+						document.getElementById('qrcode').innerHTML = qr.createImgTag(4, 8);
+					} catch(e) {
+						document.getElementById('qrcode').innerHTML = '<div style="width:120px;height:120px;border:1px dashed #999;display:flex;align-items:center;justify-content:center;font-size:9px;color:#999;">QR</div>';
+					}
+				})();
+				</script></body></html>

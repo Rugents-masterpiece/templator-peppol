@@ -1,0 +1,141 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<Invoice:Invoice xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2" xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2" xmlns:Invoice="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2">
+  <cbc:CustomizationID>urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0</cbc:CustomizationID>
+  <cbc:ProfileID>urn:fdc:peppol.eu:2017:poacc:billing:01:1.0</cbc:ProfileID>
+  <cbc:ID>26VF00035</cbc:ID>
+  <cbc:IssueDate>2026-07-07</cbc:IssueDate>
+  <cbc:DueDate>2026-07-14</cbc:DueDate>
+  <cbc:InvoiceTypeCode>380</cbc:InvoiceTypeCode>
+  <cbc:TaxPointDate>2026-07-07</cbc:TaxPointDate><cbc:DocumentCurrencyCode>EUR</cbc:DocumentCurrencyCode>
+  <cac:AccountingSupplierParty>
+    <cac:Party>
+      <cbc:EndpointID schemeID="0245">2022802540</cbc:EndpointID>
+      <cac:PartyIdentification>
+        <cbc:ID>44722893</cbc:ID>
+      </cac:PartyIdentification>
+      <cac:PartyName>
+        <cbc:Name>REFIMO, s.r.o.</cbc:Name>
+      </cac:PartyName>
+      <cac:PostalAddress>
+        <cbc:StreetName>Bešenova</cbc:StreetName>
+        <cbc:CityName>Bešenova</cbc:CityName>
+        <cbc:PostalZone>03483</cbc:PostalZone>
+        <cac:Country>
+          <cbc:IdentificationCode>SK</cbc:IdentificationCode>
+        </cac:Country>
+      </cac:PostalAddress>
+      <cac:PhysicalLocation><cac:Address><cbc:StreetName>Bešenova</cbc:StreetName><cbc:BuildingNumber>123</cbc:BuildingNumber><cbc:CityName>Bešenova</cbc:CityName><cbc:PostalZone>03483</cbc:PostalZone><cac:Country><cbc:IdentificationCode>SK</cbc:IdentificationCode></cac:Country></cac:Address></cac:PhysicalLocation><cac:PartyTaxScheme>
+        <cbc:CompanyID>SK2022802540</cbc:CompanyID>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:PartyTaxScheme>
+    <cac:PartyLegalEntity><cbc:RegistrationName>REFIMO, s.r.o.</cbc:RegistrationName><cbc:CompanyID>44722893</cbc:CompanyID></cac:PartyLegalEntity><cac:Contact><cbc:Name>Obchodné oddelenie REFIMO</cbc:Name><cbc:Telephone>+421 905 000 001</cbc:Telephone><cbc:ElectronicMail>obchod@refimo.example</cbc:ElectronicMail></cac:Contact></cac:Party>
+  </cac:AccountingSupplierParty>
+  <cac:AccountingCustomerParty>
+    <cac:Party>
+      <cbc:EndpointID schemeID="0245">2020325516</cbc:EndpointID>
+      <cac:PartyIdentification>
+        <cbc:ID>36502154</cbc:ID>
+      </cac:PartyIdentification>
+      <cac:PartyName>
+        <cbc:Name>Deloitte Audit s.r.o</cbc:Name>
+      </cac:PartyName>
+      <cac:PostalAddress>
+        <cbc:StreetName>Apollo BC, Prievozská</cbc:StreetName>
+        <cbc:CityName>Bratislava</cbc:CityName>
+        <cbc:PostalZone>82109</cbc:PostalZone>
+        <cac:Country>
+          <cbc:IdentificationCode>SK</cbc:IdentificationCode>
+        </cac:Country>
+      </cac:PostalAddress>
+      <cac:PhysicalLocation><cac:Address><cbc:StreetName>Prievozská</cbc:StreetName><cbc:BuildingNumber>2</cbc:BuildingNumber><cbc:CityName>Bratislava</cbc:CityName><cbc:PostalZone>82109</cbc:PostalZone><cac:Country><cbc:IdentificationCode>SK</cbc:IdentificationCode></cac:Country></cac:Address></cac:PhysicalLocation><cac:PartyTaxScheme>
+        <cbc:CompanyID>SK2020325516</cbc:CompanyID>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:PartyTaxScheme>
+    <cac:PartyLegalEntity><cbc:RegistrationName>Deloitte Audit s.r.o</cbc:RegistrationName><cbc:CompanyID>36502154</cbc:CompanyID></cac:PartyLegalEntity><cac:Contact><cbc:Name>Účtovné oddelenie Deloitte Audit</cbc:Name><cbc:Telephone>+421 905 000 002</cbc:Telephone><cbc:ElectronicMail>uctaren@deloitte-audit.example</cbc:ElectronicMail></cac:Contact></cac:Party>
+  </cac:AccountingCustomerParty>
+  <cac:PaymentMeans>
+    <cbc:PaymentMeansCode name="Credit transfer">30</cbc:PaymentMeansCode>
+    <cbc:PaymentID>2600035</cbc:PaymentID>
+    <cac:PayeeFinancialAccount>
+      <cbc:ID>SK64 0900 0000 00 033436 0567</cbc:ID>
+      <cbc:Name>REFIMO, s.r.o.</cbc:Name>
+      <cac:FinancialInstitutionBranch>
+        <cbc:ID>GIBASKBX</cbc:ID>
+      </cac:FinancialInstitutionBranch>
+    </cac:PayeeFinancialAccount>
+  </cac:PaymentMeans>
+  <cac:TaxTotal>
+    <cbc:TaxAmount currencyID="EUR">27.36</cbc:TaxAmount>
+    <cac:TaxSubtotal>
+      <cbc:TaxableAmount currencyID="EUR">100.37</cbc:TaxableAmount>
+      <cbc:TaxAmount currencyID="EUR">23.08</cbc:TaxAmount>
+      <cac:TaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>23</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:TaxCategory>
+    </cac:TaxSubtotal>
+    <cac:TaxSubtotal>
+      <cbc:TaxableAmount currencyID="EUR">22.49</cbc:TaxableAmount>
+      <cbc:TaxAmount currencyID="EUR">4.27</cbc:TaxAmount>
+      <cac:TaxCategory>
+        <cbc:ID>R1</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:TaxCategory>
+    </cac:TaxSubtotal>
+  </cac:TaxTotal>
+  <cac:LegalMonetaryTotal>
+    <cbc:LineExtensionAmount currencyID="EUR">122.8600</cbc:LineExtensionAmount>
+    <cbc:TaxExclusiveAmount currencyID="EUR">122.8600</cbc:TaxExclusiveAmount>
+    <cbc:TaxInclusiveAmount currencyID="EUR">150.21</cbc:TaxInclusiveAmount>
+    <cbc:ChargeTotalAmount currencyID="EUR">0</cbc:ChargeTotalAmount>
+    <cbc:PayableAmount currencyID="EUR">150.21</cbc:PayableAmount>
+  </cac:LegalMonetaryTotal>
+  <cac:InvoiceLine>
+    <cbc:ID>1</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="C62">1</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">100.37</cbc:LineExtensionAmount>
+    <cbc:AccountingCost/>
+    <cac:Item>
+      <cbc:Name>Batéria alkalická 1,5 V /1 ks/</cbc:Name>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>23</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">100.37</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>2</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="LTR">1</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">22.49</cbc:LineExtensionAmount>
+    <cbc:AccountingCost/>
+    <cac:Item>
+      <cbc:Name>Becherovka</cbc:Name>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>R1</cbc:ID>
+        <cbc:Percent>19</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">22.49</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+</Invoice:Invoice>
